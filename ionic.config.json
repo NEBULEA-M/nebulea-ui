@@ -1,0 +1,7 @@
+{
+  "name": "nebulea-ui",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
