@@ -1,5 +1,7 @@
 import "./ExploreContainer.css";
 
+import { Button } from "@nextui-org/button";
+
 interface ContainerProps {
   name: string;
 }
@@ -10,10 +12,11 @@ const ExploreContainer: React.FC<ContainerProps> = ({ name }) => {
       <strong>{name}</strong>
       <p>
         Explore{" "}
-        <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">
-          UI Components
-        </a>
+        <Button color="primary">
+          Button
+        </Button>
       </p>
+
     </div>
   );
 };

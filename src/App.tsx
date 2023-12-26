@@ -20,10 +20,11 @@ import { Redirect, Route } from "react-router-dom";
 
 import Menu from "./components/Menu";
 import Page from "./pages/Page";
+import { FC } from "react";
 
 setupIonicReact();
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
