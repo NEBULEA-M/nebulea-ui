@@ -1,11 +1,10 @@
-import "./Page.css";
-
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import { FC } from "react";
 import { useParams } from "react-router";
 
-import ExploreContainer from "../components/ExploreContainer";
+import DashboardTemplate from "@/components/templates/DashboardTemplate";
 
-const Page: React.FC = () => {
+const Home: FC = () => {
   const { name } = useParams<{ name: string }>();
 
   return (
@@ -25,10 +24,10 @@ const Page: React.FC = () => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name={name} />
+        <DashboardTemplate />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Page;
+export default Home;

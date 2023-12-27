@@ -9,7 +9,10 @@
   ],
   "plugins": [
     "simple-import-sort",
-    "unused-imports"
+    "unused-imports",
+    "import",
+    "react",
+    "prettier"
   ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "off",
