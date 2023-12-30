@@ -16,9 +16,9 @@ import "./theme/variables.scss";
 
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { FC } from "react";
-import { Redirect, Route } from "react-router-dom";
-import Home from "@/pages/Home";
+import { FC, Suspense } from "react";
+import { Route } from "react-router-dom";
+import { getRoutes } from "@/core/routeConfig";
 
 
 setupIonicReact();
@@ -29,12 +29,23 @@ const App: FC = () => {
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              <Redirect to="/folder/Inbox" />
-            </Route>
-            <Route path="/folder/:name" exact={true}>
-              <Home />
-            </Route>
+            <Suspense>
+              {getRoutes().map((route) =>
+                route.isSecure ? (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    component={route.component}
+                  />
+                ) : (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    component={route.component}
+                  />
+                ))
+              }
+            </Suspense>
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

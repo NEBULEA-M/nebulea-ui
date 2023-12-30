@@ -1,5 +1,7 @@
 import { IonCol, IonContent, IonGrid, IonIcon, IonRow } from "@ionic/react";
-import { batteryHalf } from "ionicons/icons";
+import { Button } from "@nextui-org/button";
+import { Link } from "@nextui-org/link";
+import { batteryHalf, navigateCircle } from "ionicons/icons";
 
 function DashboardTemplate(props: any) {
   return (
@@ -7,14 +9,24 @@ function DashboardTemplate(props: any) {
       <IonGrid>
         <IonRow>
           <IonCol>
-            <IonIcon icon={batteryHalf}></IonIcon>
+            <Button isIconOnly variant="flat" color="warning">
+              <IonIcon icon={batteryHalf}></IonIcon>
+            </Button>
           </IonCol>
-          <IonCol>2</IonCol>
+
+          <IonCol>
+            <Button isIconOnly variant="flat" color="warning"
+                    as={Link}
+                    href="/control"
+            >
+              <IonIcon icon={navigateCircle}></IonIcon>
+            </Button>
+          </IonCol>
           <IonCol>3</IonCol>
         </IonRow>
       </IonGrid>
     </IonContent>
-  )
+  );
 }
 
 export default DashboardTemplate;
