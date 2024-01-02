@@ -1,7 +1,7 @@
 import { Button } from "@nextui-org/button";
 import React from "react";
 
-function ButtomCommon(props: any ) {
+function ButtonCommon(props: any ) {
   const {isLoading, variant, children, color, onClick} = props;
 
   return (
@@ -15,9 +15,9 @@ function ButtomCommon(props: any ) {
   )
 }
 
-ButtomCommon.defaultProps = {
+ButtonCommon.defaultProps = {
   color: "primary",
   variant: "ghost"
 }
 
-export default React.memo(ButtomCommon);
+export default React.memo(ButtonCommon);
