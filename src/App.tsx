@@ -19,6 +19,8 @@ import { IonReactRouter } from "@ionic/react-router";
 import { FC, Suspense } from "react";
 import { Route } from "react-router-dom";
 import { getRoutes } from "@/core/routeConfig";
+import RenderOnAnonymous from "@/components/templates/RenderOnAnonymou";
+import RenderOnAuthenticated from "@/components/templates/RenderOnAuthenticated";
 
 
 setupIonicReact();
@@ -32,17 +34,22 @@ const App: FC = () => {
             <Suspense>
               {getRoutes().map((route) =>
                 route.isSecure ? (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    component={route.component}
-                  />
+                  <RenderOnAuthenticated key={route.path}>
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      component={route.component}
+                    />
+                  </RenderOnAuthenticated>
+
                 ) : (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    component={route.component}
-                  />
+                  <RenderOnAnonymous key={route.path}>
+                    <Route
+                      key={`${route.path}`}
+                      path={route.path}
+                      component={route.component}
+                    />
+                  </RenderOnAnonymous>
                 ))
               }
             </Suspense>

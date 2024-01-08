@@ -83,7 +83,7 @@ const configure = () => {
 
 const getAxiosClient = () => _axios;
 
-const HttpService = {
+export const HttpService = {
   HttpMethods,
   configure,
   getAxiosClient

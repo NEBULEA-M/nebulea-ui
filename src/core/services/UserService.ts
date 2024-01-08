@@ -1,6 +1,5 @@
 import { keycloak } from "@/core/keycloak/keycloak";
-import { a } from "vite-node/index-6fb787b2";
-import { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
+import { InternalAxiosRequestConfig } from "axios";
 
 
 /**
@@ -8,19 +7,18 @@ import { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
  *
  * @param onAuthenticatedCallback
  */
-
 const initKeycloak = (onAuthenticatedCallback: () => void) => {
   keycloak.init({
     onLoad: "check-sso",
+    enableLogging: true,
     silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html",
     pkceMethod: "S256"
   })
     .then((authenticated) => {
       if (!authenticated) {
         console.log("user is not authenticated..!");
-      } else {
-        onAuthenticatedCallback();
       }
+      onAuthenticatedCallback();
     })
     .catch(console.error);
 };

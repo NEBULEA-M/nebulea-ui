@@ -3,10 +3,12 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
+import UserService from "@/core/services/UserService";
+import { HttpService } from "@/core/services/HttpService";
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
-root.render(
+const renderApp = () => root.render(
   <React.StrictMode>
     <NextUIProvider>
       <main className="dark text-foreground bg-background">
@@ -15,3 +17,6 @@ root.render(
     </NextUIProvider>
   </React.StrictMode>
 );
+UserService.initKeycloak(renderApp);
+
+HttpService.configure();
