@@ -9,7 +9,10 @@ function DashboardTemplate(props: any) {
       <IonGrid>
         <IonRow>
           <IonCol>
-            <Button isIconOnly variant="flat" color="warning">
+            <Button isIconOnly variant="flat" color="warning"
+                    as={Link}
+                    href="/login"
+            >
               <IonIcon icon={batteryHalf}></IonIcon>
             </Button>
           </IonCol>
