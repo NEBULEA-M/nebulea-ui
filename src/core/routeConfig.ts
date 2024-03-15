@@ -16,7 +16,7 @@ interface Route {
 
 export const RoutePaths = {
   HOME: "/",
-  LOGIN: "/loginn",
+  LOGIN: "/login",
   CONTROL: "/control"
 };
 
