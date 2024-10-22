@@ -1,5 +1,3 @@
-import styles from "./styles.module.scss";
-
 import { IonContent, IonList, IonListHeader, IonMenu } from "@ionic/react";
 import { mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp } from "ionicons/icons";
 import { useLocation } from "react-router-dom";
@@ -16,14 +14,14 @@ const appPages: AppPage[] = [
     title: "Inbox",
     url: "/folder/Inbox",
     iosIcon: mailOutline,
-    mdIcon: mailSharp
+    mdIcon: mailSharp,
   },
   {
     title: "Outbox",
     url: "/folder/Outbox",
     iosIcon: paperPlaneOutline,
-    mdIcon: paperPlaneSharp
-  }
+    mdIcon: paperPlaneSharp,
+  },
 ];
 
 const Menu: React.FC = () => {

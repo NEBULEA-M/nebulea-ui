@@ -1,5 +1,6 @@
-import UserService from "@/core/services/UserService";
 import React, { ReactNode } from "react";
+
+import UserService from "@/core/services/UserService";
 
 interface RenderOnAuthenticatedProps {
   children: ReactNode;

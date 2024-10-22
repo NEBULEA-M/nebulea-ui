@@ -18,14 +18,15 @@ import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from "@ionic/r
 import { IonReactRouter } from "@ionic/react-router";
 import { FC, Suspense } from "react";
 import { Route } from "react-router-dom";
-import { getRoutes } from "@/core/routeConfig";
-import RenderOnAnonymous from "@/components/templates/RenderOnAnonymou";
-import RenderOnAuthenticated from "@/components/templates/RenderOnAuthenticated";
 
+import RenderOnAnonymous from "@/components/templates/RenderOnAnonymous";
+import RenderOnAuthenticated from "@/components/templates/RenderOnAuthenticated";
+import { getRoutes } from "@/core/routeConfig";
 
 setupIonicReact();
 
 const App: FC = () => {
+
   return (
     <IonApp>
       <IonReactRouter>
@@ -35,23 +36,14 @@ const App: FC = () => {
               {getRoutes().map((route) =>
                 route.isSecure ? (
                   <RenderOnAuthenticated key={route.path}>
-                    <Route
-                      key={route.path}
-                      path={route.path}
-                      component={route.component}
-                    />
+                    <Route key={route.path} path={route.path} component={route.component} />
                   </RenderOnAuthenticated>
-
                 ) : (
                   <RenderOnAnonymous key={route.path}>
-                    <Route
-                      key={`${route.path}`}
-                      path={route.path}
-                      component={route.component}
-                    />
+                    <Route key={`${route.path}`} path={route.path} component={route.component} />
                   </RenderOnAnonymous>
-                ))
-              }
+                )
+              )}
             </Suspense>
           </IonRouterOutlet>
         </IonSplitPane>

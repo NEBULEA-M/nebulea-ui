@@ -1,23 +1,22 @@
 import React, { lazy } from "react";
 
-
 const Login = lazy(() => import("@/pages/Login"));
 const Home = lazy(() => import("@/pages/Home"));
 const Control = lazy(() => import("@/pages/Control"));
 
 interface Route {
-  path: string,
-  pageTitle: string,
-  component: React.LazyExoticComponent<React.FC>,
-  isSecure: boolean,
-  permission: string[],
-  subPages: Route[],
+  path: string;
+  pageTitle: string;
+  component: React.LazyExoticComponent<React.FC>;
+  isSecure: boolean;
+  permission: string[];
+  subPages: Route[];
 }
 
 export const RoutePaths = {
   HOME: "/",
   LOGIN: "/login",
-  CONTROL: "/control"
+  CONTROL: "/control",
 };
 
 export const routes: Route[] = [
@@ -27,7 +26,7 @@ export const routes: Route[] = [
     component: Home,
     isSecure: false,
     permission: [],
-    subPages: []
+    subPages: [],
   },
   {
     path: RoutePaths.CONTROL,
@@ -35,7 +34,7 @@ export const routes: Route[] = [
     component: Control,
     isSecure: false,
     permission: [],
-    subPages: []
+    subPages: [],
   },
   {
     path: RoutePaths.LOGIN,
@@ -43,7 +42,7 @@ export const routes: Route[] = [
     component: Login,
     isSecure: false,
     permission: [],
-    subPages: []
+    subPages: [],
   },
 ];
 

@@ -1,18 +1,18 @@
 // HTTP
 
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+
 import UserService from "@/core/services/UserService";
 
 const _axios: AxiosInstance = axios.create();
-
 
 const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
   if (axios.isAxiosError(error)) {
     const { message } = error;
     const { method, url } = error.config as AxiosRequestConfig;
-    const { statusText, status } = error.response as AxiosResponse ?? {};
+    const { statusText, status } = (error.response as AxiosResponse) ?? {};
 
-    console.log(`🚨 [API] ${method?.toUpperCase()} ${url} | Error ${status} ${message}`);
+    console.log(`🚨 [API] ${method?.toUpperCase()} ${url} | Error ${status} ${statusText} ${message}`);
 
     switch (status) {
       case 401: {
@@ -49,6 +49,7 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
 };
 
 const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
+  console.log("request");
   const successCallback = async (): Promise<InternalAxiosRequestConfig> => {
     config.headers.Authorization = `Bearer ${UserService.getToken()}`;
     return Promise.resolve(config);
@@ -68,11 +69,10 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
   return response;
 };
 
-
 const HttpMethods = {
   GET: "GET",
   POST: "POST",
-  DELETE: "DELETE"
+  DELETE: "DELETE",
 };
 
 const configure = () => {
@@ -80,11 +80,10 @@ const configure = () => {
   _axios.interceptors.response.use(onResponse, onErrorResponse);
 };
 
-
 const getAxiosClient = () => _axios;
 
 export const HttpService = {
   HttpMethods,
   configure,
-  getAxiosClient
+  getAxiosClient,
 };

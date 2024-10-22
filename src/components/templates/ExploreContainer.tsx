@@ -11,12 +11,8 @@ const ExploreContainer: React.FC<ContainerProps> = ({ name }) => {
     <div id="container">
       <strong>{name}</strong>
       <p>
-        Explore{" "}
-        <Button color="primary">
-          Button
-        </Button>
+        Explore <Button color="primary">Button</Button>
       </p>
-
     </div>
   );
 };

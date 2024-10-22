@@ -3,11 +3,7 @@ import React, { useRef } from "react";
 
 import ButtonCommon from "@/components/atoms/Button";
 
-const Modal = ({
-                 onDismiss
-               }: {
-  onDismiss: (data?: string | null | undefined | number, role?: string) => void;
-}) => {
+const Modal = ({ onDismiss }: { onDismiss: (data?: string | null | undefined | number, role?: string) => void }) => {
   const inputRef = useRef<HTMLIonInputElement>(null);
   return (
     <IonPage>
