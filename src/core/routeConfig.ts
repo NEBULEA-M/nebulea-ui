@@ -3,6 +3,7 @@ import React, { lazy } from "react";
 const Login = lazy(() => import("@/pages/Login"));
 const Home = lazy(() => import("@/pages/Home"));
 const Control = lazy(() => import("@/pages/Control"));
+const ArmBot = lazy(() => import("@/pages/ArmBot"));
 
 interface Route {
   path: string;
@@ -17,9 +18,18 @@ export const RoutePaths = {
   HOME: "/",
   LOGIN: "/login",
   CONTROL: "/control",
+  ARM_BOT: "/arm-bot",
 };
 
 export const routes: Route[] = [
+  {
+    path: RoutePaths.LOGIN,
+    pageTitle: "Login",
+    component: Login,
+    isSecure: false,
+    permission: [],
+    subPages: [],
+  },
   {
     path: RoutePaths.HOME,
     pageTitle: "Home",
@@ -36,10 +46,11 @@ export const routes: Route[] = [
     permission: [],
     subPages: [],
   },
+
   {
-    path: RoutePaths.LOGIN,
-    pageTitle: "Login",
-    component: Login,
+    path: RoutePaths.ARM_BOT,
+    pageTitle: "ArmBot",
+    component: ArmBot,
     isSecure: false,
     permission: [],
     subPages: [],

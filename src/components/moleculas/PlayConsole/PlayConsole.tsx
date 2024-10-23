@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import ROSLIB from 'roslib';
+import React, { useEffect, useState } from "react";
+import ROSLIB from "roslib";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Slider } from "@nextui-org/slider";
 import { Chip } from "@nextui-org/chip";
 
-const ROSController = () => {
-  const [connected, setConnected] = useState(false);
-  const [jointStates, setJointStates] = useState({
+interface JointStates {
+  joint1: number;
+  joint2: number;
+  joint3: number;
+  joint4: number;
+}
+
+const PlayConsole = () => {
+  const [connected, setConnected] = useState<boolean>(false);
+  const [jointStates, setJointStates] = useState<JointStates>({
     joint1: 0,
     joint2: 0,
     joint3: 0,
@@ -61,7 +68,7 @@ const ROSController = () => {
     };
   }, [jointStates]);
 
-  const handleJointChange = (joint: any, value: any) => {
+  const handleJointChange = (joint: keyof JointStates, value: number) => {
     setJointStates(prev => ({
       ...prev,
       [joint]: value
@@ -69,7 +76,7 @@ const ROSController = () => {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
+    <Card className="mx-auto">
       <CardHeader className="flex justify-between items-center px-4 py-2">
         <div className="text-xl font-bold">ROS 2 Joint Controller</div>
         <Chip
@@ -90,14 +97,13 @@ const ROSController = () => {
             </div>
             <Slider
               label={joint}
-              value={value}
+              value={value as number}
               minValue={-3.14}
               maxValue={3.14}
               step={0.01}
-              onChange={(value) => handleJointChange(joint, value)}
+              onChange={(value) => handleJointChange(joint as keyof JointStates, value as number)}
               className="max-w-full"
               showTooltip={true}
-              // tooltipContent={value => `${value.toFixed(2)} rad`}
             />
           </div>
         ))}
@@ -106,4 +112,4 @@ const ROSController = () => {
   );
 };
 
-export default ROSController;
+export default PlayConsole;

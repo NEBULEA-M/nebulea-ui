@@ -1,4 +1,4 @@
-import { NextUIProvider } from "@nextui-org/system";
+import { NextUIProvider } from "@nextui-org/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
 

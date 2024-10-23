@@ -2,8 +2,9 @@ import { IonContent } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { Joystick } from "react-joystick-component";
 import ROSLIB from "roslib";
-import PlayConsole from "@/components/moleculas/PlayConsole";
-import Gamepad from "@/components/moleculas/Gamepad";
+import PlayConsole from "@/components/moleculas/PlayConsole/PlayConsole";
+import Gamepad from "@/components/moleculas/Gamepad/Gamepad";
+import { IJoystickUpdateEvent } from "react-joystick-component/src/Joystick";
 
 interface JoystickControlProps {
   ros2ConnectionUrl: string;
@@ -32,7 +33,7 @@ function ControlTemplate({ ros2ConnectionUrl, topicName }: JoystickControlProps)
     };
   }, [ros2ConnectionUrl]);
 
-  const handleJoystickMove = (event: any) => {
+  const handleJoystickMove = (event: IJoystickUpdateEvent) => {
     if (ros) {
       // Create and publish a message based on joystick data
       const twist = new ROSLIB.Message({
@@ -60,9 +61,7 @@ function ControlTemplate({ ros2ConnectionUrl, topicName }: JoystickControlProps)
 
   return (
     <IonContent class="ion-padding">
-      {/*<Joystick size={100} baseColor="#333" stickColor="#fff" move={handleJoystickMove} />*/}
-      <PlayConsole/>
-      {/*<Gamepad/>*/}
+      <Joystick size={100} baseColor="#333" stickColor="#fff" move={handleJoystickMove} />
     </IonContent>
   );
 }

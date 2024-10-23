@@ -4,10 +4,7 @@ import {nextui} from "@nextui-org/theme"
 module.exports = {
   content: [
     // single component styles
-    "./node_modules/@nextui-org/theme/dist/components/button.js",
-		"./node_modules/@nextui-org/theme/dist/components/card.js",
-		"./node_modules/@nextui-org/theme/dist/components/slider.js",
-		"./node_modules/@nextui-org/theme/dist/components/chip.js",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   themes: {
     light: {
