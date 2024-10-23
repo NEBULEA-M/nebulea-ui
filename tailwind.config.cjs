@@ -5,6 +5,9 @@ module.exports = {
   content: [
     // single component styles
     "./node_modules/@nextui-org/theme/dist/components/button.js",
+		"./node_modules/@nextui-org/theme/dist/components/card.js",
+		"./node_modules/@nextui-org/theme/dist/components/slider.js",
+		"./node_modules/@nextui-org/theme/dist/components/chip.js",
   ],
   themes: {
     light: {

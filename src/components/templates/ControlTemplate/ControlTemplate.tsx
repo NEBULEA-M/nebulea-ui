@@ -2,6 +2,8 @@ import { IonContent } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { Joystick } from "react-joystick-component";
 import ROSLIB from "roslib";
+import PlayConsole from "@/components/moleculas/PlayConsole";
+import Gamepad from "@/components/moleculas/Gamepad";
 
 interface JoystickControlProps {
   ros2ConnectionUrl: string;
@@ -58,7 +60,9 @@ function ControlTemplate({ ros2ConnectionUrl, topicName }: JoystickControlProps)
 
   return (
     <IonContent class="ion-padding">
-      <Joystick size={100} baseColor="#333" stickColor="#fff" move={handleJoystickMove} />
+      {/*<Joystick size={100} baseColor="#333" stickColor="#fff" move={handleJoystickMove} />*/}
+      <PlayConsole/>
+      {/*<Gamepad/>*/}
     </IonContent>
   );
 }
