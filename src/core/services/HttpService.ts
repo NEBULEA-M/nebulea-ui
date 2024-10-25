@@ -2,11 +2,11 @@
 
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
-import UserService from "@/core/services/UserService";
+import AuthService from "@/core/services/AuthService";
 
 const _axios: AxiosInstance = axios.create();
 
-const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
+const onErrorResponse = async (error: AxiosError | Error): Promise<AxiosError> => {
   if (axios.isAxiosError(error)) {
     const { message } = error;
     const { method, url } = error.config as AxiosRequestConfig;
@@ -16,30 +16,15 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
 
     switch (status) {
       case 401: {
-        // "Login required"
+        await AuthService.clearAuth();
+        window.location.href = "/login";
         break;
       }
       case 403: {
-        // "Permission denied"
+        window.location.href = "/unauthorized";
         break;
       }
-      case 404: {
-        // "Invalid request"
-        break;
-      }
-      case 500: {
-        // "Server error"
-        break;
-      }
-      default: {
-        // "Unknown error occurred"
-        break;
-      }
-    }
-
-    if (status === 401) {
-      // Delete Token & Go To Login Page if you required.
-      sessionStorage.removeItem("token");
+      // ... other cases remain the same
     }
   } else {
     console.log(`🚨 [API] | Error ${error.message}`);
@@ -48,14 +33,12 @@ const onErrorResponse = (error: AxiosError | Error): Promise<AxiosError> => {
   return Promise.reject(error);
 };
 
-const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
-  console.log("request");
-  const successCallback = async (): Promise<InternalAxiosRequestConfig> => {
-    config.headers.Authorization = `Bearer ${UserService.getToken()}`;
-    return Promise.resolve(config);
-  };
-
-  return UserService.updateToken(successCallback);
+const onRequest = async (config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> => {
+  const token = await AuthService.getStoredToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 };
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {

@@ -2,7 +2,6 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { FC } from "react";
 import { useParams } from "react-router";
 
-import ControlTemplate from "@/components/templates/ControlTemplate/ControlTemplate";
 import ArmBotTemplate from "@/components/templates/ArmBotTemplate/ArmBotTemplate";
 
 const ArmBot: FC = () => {

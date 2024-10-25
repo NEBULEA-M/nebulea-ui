@@ -1,10 +1,8 @@
 import { IonContent } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { Joystick } from "react-joystick-component";
-import ROSLIB from "roslib";
-import PlayConsole from "@/components/moleculas/PlayConsole/PlayConsole";
-import Gamepad from "@/components/moleculas/Gamepad/Gamepad";
 import { IJoystickUpdateEvent } from "react-joystick-component/src/Joystick";
+import ROSLIB from "roslib";
 
 interface JoystickControlProps {
   ros2ConnectionUrl: string;
@@ -20,7 +18,8 @@ function ControlTemplate({ ros2ConnectionUrl, topicName }: JoystickControlProps)
 
     // Initialize ROS connection
     const rosConnection = new ROSLIB.Ros({
-      url: `${ros2ConnectionUrl}?accessToken=${accessToken}`,
+      url: "wss://127.0.0.1:9090",
+      groovyCompatibility: false,
     });
 
     setRos(rosConnection);

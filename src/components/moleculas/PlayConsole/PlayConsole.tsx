@@ -1,8 +1,8 @@
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Chip } from "@nextui-org/chip";
+import { Slider } from "@nextui-org/slider";
 import React, { useEffect, useState } from "react";
 import ROSLIB from "roslib";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import { Slider } from "@nextui-org/slider";
-import { Chip } from "@nextui-org/chip";
 
 interface JointStates {
   joint1: number;
@@ -17,34 +17,34 @@ const PlayConsole = () => {
     joint1: 0,
     joint2: 0,
     joint3: 0,
-    joint4: 0
+    joint4: 0,
   });
 
   useEffect(() => {
     // Initialize ROS connection
     const ros = new ROSLIB.Ros({
-      url: 'ws://localhost:9090'
+      url: "ws://localhost:9090",
     });
 
-    ros.on('connection', () => {
+    ros.on("connection", () => {
       setConnected(true);
-      console.log('Connected to websocket server.');
+      console.log("Connected to websocket server.");
     });
 
-    ros.on('error', (error) => {
-      console.log('Error connecting to websocket server:', error);
+    ros.on("error", (error) => {
+      console.log("Error connecting to websocket server:", error);
     });
 
-    ros.on('close', () => {
+    ros.on("close", () => {
       setConnected(false);
-      console.log('Connection to websocket server closed.');
+      console.log("Connection to websocket server closed.");
     });
 
     // Create joint states publisher
     const jointStatesPub = new ROSLIB.Topic({
       ros: ros,
-      name: '/joint_states',
-      messageType: 'sensor_msgs/JointState'
+      name: "/joint_states",
+      messageType: "sensor_msgs/JointState",
     });
 
     // Publish joint states whenever they change
@@ -52,12 +52,12 @@ const PlayConsole = () => {
       const msg = new ROSLIB.Message({
         header: {
           stamp: { sec: 0, nanosec: 0 },
-          frame_id: ''
+          frame_id: "",
         },
-        name: ['joint1', 'joint2', 'joint3', 'joint4'],
+        name: ["joint1", "joint2", "joint3", "joint4"],
         position: Object.values(jointStates),
         velocity: [],
-        effort: []
+        effort: [],
       });
       jointStatesPub.publish(msg);
     }, 100);
@@ -69,9 +69,9 @@ const PlayConsole = () => {
   }, [jointStates]);
 
   const handleJointChange = (joint: keyof JointStates, value: number) => {
-    setJointStates(prev => ({
+    setJointStates((prev) => ({
       ...prev,
-      [joint]: value
+      [joint]: value,
     }));
   };
 
@@ -79,10 +79,7 @@ const PlayConsole = () => {
     <Card className="mx-auto">
       <CardHeader className="flex justify-between items-center px-4 py-2">
         <div className="text-xl font-bold">ROS 2 Joint Controller</div>
-        <Chip
-          color={connected ? "success" : "danger"}
-          variant="flat"
-        >
+        <Chip color={connected ? "success" : "danger"} variant="flat">
           {connected ? "Connected" : "Disconnected"}
         </Chip>
       </CardHeader>
@@ -91,9 +88,7 @@ const PlayConsole = () => {
           <div key={joint} className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-sm">{joint}</span>
-              <span className="text-sm text-default-500">
-                {value.toFixed(2)}
-              </span>
+              <span className="text-sm text-default-500">{value.toFixed(2)}</span>
             </div>
             <Slider
               label={joint}

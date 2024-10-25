@@ -5,23 +5,32 @@ const Home = lazy(() => import("@/pages/Home"));
 const Control = lazy(() => import("@/pages/Control"));
 const ArmBot = lazy(() => import("@/pages/ArmBot"));
 
-interface Route {
+export interface Route {
   path: string;
   pageTitle: string;
   component: React.LazyExoticComponent<React.FC>;
   isSecure: boolean;
   permission: string[];
-  subPages: Route[];
+  subPages?: Route[];
 }
 
 export const RoutePaths = {
-  HOME: "/",
+  HOME: "/home",
   LOGIN: "/login",
   CONTROL: "/control",
   ARM_BOT: "/arm-bot",
-};
+  UNAUTHORIZED: "/unauthorized",
+} as const;
 
 export const routes: Route[] = [
+  {
+    path: RoutePaths.HOME,
+    pageTitle: "Home",
+    component: Home,
+    isSecure: true,
+    permission: [],
+    subPages: [],
+  },
   {
     path: RoutePaths.LOGIN,
     pageTitle: "Login",
@@ -31,38 +40,33 @@ export const routes: Route[] = [
     subPages: [],
   },
   {
-    path: RoutePaths.HOME,
-    pageTitle: "Home",
-    component: Home,
-    isSecure: false,
-    permission: [],
-    subPages: [],
-  },
-  {
     path: RoutePaths.CONTROL,
     pageTitle: "Control",
     component: Control,
-    isSecure: false,
+    isSecure: true,
     permission: [],
     subPages: [],
   },
-
   {
     path: RoutePaths.ARM_BOT,
     pageTitle: "ArmBot",
     component: ArmBot,
-    isSecure: false,
+    isSecure: true,
     permission: [],
     subPages: [],
   },
 ];
 
-export const getRoutes = (initRoutes = routes, result: Route[] = []) => {
-  initRoutes.forEach((route) => {
-    result.push(route);
-    if (route.subPages) {
-      route.subPages.forEach((r) => getRoutes([r], result));
-    }
-  });
-  return result;
+export const getRoutes = (initRoutes = routes): Route[] => {
+  const flattenRoutes = (routes: Route[]): Route[] => {
+    return routes.reduce<Route[]>((acc, route) => {
+      acc.push(route);
+      if (route.subPages && route.subPages.length > 0) {
+        acc.push(...flattenRoutes(route.subPages));
+      }
+      return acc;
+    }, []);
+  };
+
+  return flattenRoutes(initRoutes);
 };

@@ -3,7 +3,6 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 import { HttpService } from "@/core/services/HttpService";
-import UserService from "@/core/services/UserService";
 
 import App from "./App";
 
@@ -19,7 +18,6 @@ const renderApp = () =>
       </NextUIProvider>
     </React.StrictMode>,
   );
-// UserService.initKeycloak(renderApp);
-renderApp()
+renderApp();
 
 HttpService.configure();

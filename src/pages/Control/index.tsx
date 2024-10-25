@@ -24,10 +24,7 @@ const Control: FC = () => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ControlTemplate
-          ros2ConnectionUrl={"ws://localhost:9091/event-emitter"}
-          topicName={"/turtle1/cmd_vel"}
-        />
+        <ControlTemplate ros2ConnectionUrl={"ws://localhost:9091/event-emitter"} topicName={"/turtle1/cmd_vel"} />
       </IonContent>
     </IonPage>
   );

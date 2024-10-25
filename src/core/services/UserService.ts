@@ -1,70 +1,20 @@
-import { InternalAxiosRequestConfig } from "axios";
+import AuthService from "./AuthService";
 
-import { keycloak } from "@/core/keycloak/keycloak";
+class UserService {
+  static async isLoggedIn(): Promise<boolean> {
+    const token = await AuthService.getStoredToken();
+    return !!token;
+  }
 
-/**
- * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
- *
- * @param onAuthenticatedCallback
- */
-const initKeycloak = (onAuthenticatedCallback: () => void) => {
-  keycloak
-    .init({
-      onLoad: "check-sso",
-      enableLogging: true,
-      silentCheckSsoRedirectUri: window.location.origin + "/silent-check-sso.html",
-      pkceMethod: "S256",
-    })
-    .then((authenticated) => {
-      if (!authenticated) {
-        console.log("user is not authenticated..!");
-      }
-      onAuthenticatedCallback();
-    })
-    .catch(console.error);
-};
+  static async getCurrentUser(): Promise<any | null> {
+    return await AuthService.getStoredUser();
+  }
 
-const getKeyCloak = () => keycloak;
-
-const doLogin = keycloak.login;
-
-const doLogout = keycloak.logout;
-
-const getToken = () => keycloak.token;
-
-const getTokenParsed = () => keycloak.tokenParsed;
-
-const isLoggedIn = () => keycloak.authenticated;
-
-const updateToken = (
-  successCallback: () => Promise<InternalAxiosRequestConfig>,
-): Promise<InternalAxiosRequestConfig> => {
-  return keycloak
-    .updateToken(5)
-    .then(successCallback)
-    .catch((error) => {
-      // Handle error or perform necessary actions.
-      // Might want to throw an error or return a default InternalAxiosRequestConfig.
-      console.error("Token update error:", error);
-      return Promise.reject(error); // Or return a default config: Promise.resolve(defaultConfig);
-    });
-};
-
-const getUsername = () => keycloak.tokenParsed?.realm_access;
-
-const hasRole = (roles: string[]) => roles.some((role: string) => keycloak.hasRealmRole(role));
-
-const UserService = {
-  initKeycloak,
-  doLogin,
-  doLogout,
-  isLoggedIn,
-  getToken,
-  getTokenParsed,
-  updateToken,
-  getUsername,
-  hasRole,
-  getKeyCloak: getKeyCloak,
-};
+  static async hasRole(roles: string[]): Promise<boolean> {
+    const user = await this.getCurrentUser();
+    if (!user || !user.roles) return false;
+    return roles.some((role: string) => user.roles.includes(role));
+  }
+}
 
 export default UserService;
