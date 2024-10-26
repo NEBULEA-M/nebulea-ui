@@ -2,7 +2,7 @@ import React, { lazy } from "react";
 
 const Login = lazy(() => import("@/pages/Login"));
 const Home = lazy(() => import("@/pages/Home"));
-const Control = lazy(() => import("@/pages/Control"));
+const Empty = lazy(() => import("@/pages/Explorer"));
 const ArmBot = lazy(() => import("@/pages/ArmBot"));
 
 export interface Route {
@@ -17,7 +17,7 @@ export interface Route {
 export const RoutePaths = {
   HOME: "/home",
   LOGIN: "/login",
-  CONTROL: "/control",
+  EMPTY: "/empty",
   ARM_BOT: "/arm-bot",
   UNAUTHORIZED: "/unauthorized",
 } as const;
@@ -40,9 +40,9 @@ export const routes: Route[] = [
     subPages: [],
   },
   {
-    path: RoutePaths.CONTROL,
-    pageTitle: "Control",
-    component: Control,
+    path: RoutePaths.EMPTY,
+    pageTitle: "Empty",
+    component: Empty,
     isSecure: true,
     permission: [],
     subPages: [],

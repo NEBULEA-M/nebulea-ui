@@ -2,9 +2,9 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { FC } from "react";
 import { useParams } from "react-router";
 
-import ControlTemplate from "@/components/templates/ControlTemplate/ControlTemplate";
+import ExploreContainer from "@/components/templates/ExploreTemplate/ExploreContainer";
 
-const Control: FC = () => {
+const Explorer: FC = () => {
   const { name } = useParams<{ name: string }>();
 
   return (
@@ -24,10 +24,10 @@ const Control: FC = () => {
             <IonTitle size="large">{name}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ControlTemplate ros2ConnectionUrl={"ws://localhost:9091/event-emitter"} topicName={"/turtle1/cmd_vel"} />
+        <ExploreContainer name={"test"} />
       </IonContent>
     </IonPage>
   );
 };
 
-export default Control;
+export default Explorer;
