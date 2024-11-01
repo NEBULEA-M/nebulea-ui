@@ -7,16 +7,14 @@ import {
   IonCardContent,
   IonCardHeader,
   IonCardTitle,
-  IonContent,
   IonInput,
+  IonInputPasswordToggle,
   IonItem,
-  IonLabel,
   IonLoading,
   IonSpinner,
-  useIonRouter,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { RoutePaths } from "@/core/routeConfig";
 import AuthService from "@/core/services/AuthService";
@@ -27,7 +25,7 @@ interface LocationState {
 }
 
 function LoginTemplate() {
-  const router = useIonRouter();
+  const history = useHistory();
   const location = useLocation<LocationState>();
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const [showLoading, setShowLoading] = useState(false);
@@ -35,15 +33,18 @@ function LoginTemplate() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
+  // Add refs for the input fields
+  const usernameRef = useRef<HTMLIonInputElement>(null);
+  const passwordRef = useRef<HTMLIonInputElement>(null);
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await AuthService.initStorage();
         const isAuthenticated = await UserService.isLoggedIn();
         if (isAuthenticated) {
           const defaultPath = RoutePaths.HOME;
           const redirectPath = location.state?.from?.pathname || defaultPath;
-          router.push(redirectPath, "root", "replace");
+          history.push(redirectPath);
         }
       } catch (error) {
         console.error("Auth check failed:", error);
@@ -52,34 +53,56 @@ function LoginTemplate() {
       }
     };
     checkAuth();
-  }, [router, location.state]);
+  }, [history, location.state]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Get the final values directly from the input refs
+    const finalUsername = (await usernameRef.current?.getInputElement().then((input) => input?.value)) || "";
+    const finalPassword = (await passwordRef.current?.getInputElement().then((input) => input?.value)) || "";
+
+    const finalCredentials = {
+      username: finalUsername,
+      password: finalPassword,
+    };
+
+    if (!finalCredentials.username || !finalCredentials.password) {
+      setErrorMessage("Please fill in all fields");
+      setShowError(true);
+      return;
+    }
+
     setShowLoading(true);
     setShowError(false);
 
     try {
-      const success = await AuthService.login(credentials);
+      const success = await AuthService.login(finalCredentials);
       if (success) {
         const defaultPath = RoutePaths.HOME;
         const redirectPath = location.state?.from?.pathname || defaultPath;
-        router.push(redirectPath, "root", "replace");
+        window.location.href = redirectPath;
       } else {
         setErrorMessage("Invalid username or password");
         setShowError(true);
-        setShowLoading(false);
       }
     } catch (error) {
       console.error("Login error:", error);
       setErrorMessage("An error occurred during login");
       setShowError(true);
+    } finally {
       setShowLoading(false);
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleLogin(event);
+    }
+  };
+
   return (
-    <IonContent className="ion-padding">
+    <>
       <div className="login-container">
         <IonCard>
           {isCheckingAuth ? (
@@ -95,8 +118,9 @@ function LoginTemplate() {
               <IonCardContent>
                 <form onSubmit={handleLogin}>
                   <IonItem>
-                    <IonLabel position="floating">Username</IonLabel>
                     <IonInput
+                      ref={usernameRef}
+                      label="Username"
                       type="text"
                       value={credentials.username}
                       onIonChange={(e) =>
@@ -105,13 +129,15 @@ function LoginTemplate() {
                           username: e.detail.value || "",
                         })
                       }
+                      onKeyPress={handleKeyPress}
                       required
                     />
                   </IonItem>
 
                   <IonItem>
-                    <IonLabel position="floating">Password</IonLabel>
                     <IonInput
+                      ref={passwordRef}
+                      label="Password"
                       type="password"
                       value={credentials.password}
                       onIonChange={(e) =>
@@ -120,8 +146,11 @@ function LoginTemplate() {
                           password: e.detail.value || "",
                         })
                       }
+                      onKeyPress={handleKeyPress}
                       required
-                    />
+                    >
+                      <IonInputPasswordToggle slot="end"></IonInputPasswordToggle>
+                    </IonInput>
                   </IonItem>
 
                   <div className="ion-padding-top">
@@ -145,7 +174,7 @@ function LoginTemplate() {
         message={errorMessage}
         buttons={["OK"]}
       />
-    </IonContent>
+    </>
   );
 }
 

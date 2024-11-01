@@ -1,19 +1,32 @@
-import AuthService from "./AuthService";
+import AuthService from "@/core/services/AuthService";
 
 class UserService {
   static async isLoggedIn(): Promise<boolean> {
-    const token = await AuthService.getStoredToken();
-    return !!token;
+    return await AuthService.validateAndRefreshTokens();
   }
 
   static async getCurrentUser(): Promise<any | null> {
-    return await AuthService.getStoredUser();
+    try {
+      const isValid = await this.isLoggedIn();
+      if (!isValid) {
+        return null;
+      }
+      return await AuthService.getStoredUser();
+    } catch (error) {
+      console.error("Get current user failed:", error);
+      return null;
+    }
   }
 
   static async hasRole(roles: string[]): Promise<boolean> {
-    const user = await this.getCurrentUser();
-    if (!user || !user.roles) return false;
-    return roles.some((role: string) => user.roles.includes(role));
+    try {
+      const user = await this.getCurrentUser();
+      if (!user || !user.roles) return false;
+      return roles.some((role: string) => user.roles.includes(role));
+    } catch (error) {
+      console.error("Role check failed:", error);
+      return false;
+    }
   }
 }
 

@@ -1,11 +1,12 @@
 import { IonCol, IonGrid, IonIcon, IonRow } from "@ionic/react";
 import { Button } from "@nextui-org/button";
 import { batteryHalf } from "ionicons/icons";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 import armBotIcon from "@/assets/icon/armBotIcon.svg";
 import { RoutePaths } from "@/core/routeConfig";
+import AuthService from "@/core/services/AuthService";
 import UserService from "@/core/services/UserService";
 
 interface NavButtonProps {
@@ -30,11 +31,37 @@ const NavButton: React.FC<NavButtonProps> = React.memo(({ icon, path, isActive, 
 function DashboardTemplate() {
   const history = useHistory();
   const location = useLocation();
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Initialize storage and validate tokens on mount
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        // Validate and refresh tokens if needed
+        const isValid = await AuthService.validateAndRefreshTokens();
+
+        if (!isValid) {
+          history.replace(RoutePaths.LOGIN);
+        }
+
+        setIsInitialized(true);
+      } catch (error) {
+        console.error("Auth initialization failed:", error);
+        history.replace(RoutePaths.LOGIN);
+      }
+    };
+
+    initializeAuth();
+  }, [history]);
 
   const handleNavigation = useCallback(
     async (path: string) => {
+      if (!isInitialized) {
+        return;
+      }
+
       try {
-        // Check for access secure routes
+        // Check for access to secure routes
         if (path !== RoutePaths.LOGIN) {
           const isAuthenticated = await UserService.isLoggedIn();
           if (!isAuthenticated) {
@@ -48,9 +75,11 @@ function DashboardTemplate() {
         }
       } catch (error) {
         console.error("Navigation error:", error);
+        // On error, attempt to reinitialize auth
+        setIsInitialized(false);
       }
     },
-    [location.pathname, history],
+    [location.pathname, history, isInitialized],
   );
 
   // Navigation items
@@ -66,6 +95,10 @@ function DashboardTemplate() {
       requiresAuth: true,
     },
   ];
+
+  if (!isInitialized) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <div className="mx-auto px-1">

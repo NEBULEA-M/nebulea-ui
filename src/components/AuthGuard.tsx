@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Redirect, Route, useLocation } from "react-router-dom";
 
 import { RoutePaths } from "@/core/routeConfig";
+import AuthService from "@/core/services/AuthService";
 import UserService from "@/core/services/UserService";
 
 interface AuthGuardProps {
@@ -34,12 +35,24 @@ export const AuthGuard: React.FC<AuthGuardProps> = React.memo(
         }
 
         try {
-          const authenticated = await UserService.isLoggedIn();
+          // Validate and refresh tokens if necessary
+          const isValid = await AuthService.validateAndRefreshTokens();
+
+          if (!isValid) {
+            setAuthState({
+              isLoading: false,
+              isAuthenticated: false,
+              hasPermission: false,
+            });
+            return;
+          }
+
+          // Check permissions only if authentication is valid
           const hasPermission = permissions.length === 0 || (await UserService.hasRole(permissions));
 
           setAuthState({
             isLoading: false,
-            isAuthenticated: authenticated,
+            isAuthenticated: true,
             hasPermission,
           });
         } catch (error) {
@@ -67,12 +80,10 @@ export const AuthGuard: React.FC<AuthGuardProps> = React.memo(
       <Route
         {...rest}
         render={(props) => {
-          // For non-secure routes
           if (!isSecure) {
             return <Component {...props} />;
           }
 
-          // For secure routes
           if (!authState.isAuthenticated) {
             return (
               <Redirect

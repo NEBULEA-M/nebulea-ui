@@ -1,8 +1,18 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from "@ionic/react";
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonMenuButton,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+} from "@ionic/react";
 import { FC } from "react";
 import { useParams } from "react-router";
 
 import ArmBotTemplate from "@/components/templates/ArmBotTemplate/ArmBotTemplate";
+import { RoutePaths } from "@/core/routeConfig";
 
 const ArmBot: FC = () => {
   const { name } = useParams<{ name: string }>();
@@ -13,6 +23,7 @@ const ArmBot: FC = () => {
         <IonToolbar>
           <IonButtons slot="start">
             <IonMenuButton />
+            <IonBackButton defaultHref={RoutePaths.HOME} />
           </IonButtons>
           <IonTitle>{name}</IonTitle>
         </IonToolbar>

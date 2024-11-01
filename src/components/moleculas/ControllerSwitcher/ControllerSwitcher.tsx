@@ -1,4 +1,5 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Chip } from "@nextui-org/chip";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import ArmBotSwitcher from "@/components/atoms/Switcher";
@@ -6,6 +7,7 @@ import GamepadController from "@/components/moleculas/Gamepad";
 import PlayConsole from "@/components/moleculas/PlayConsole";
 import AuthService from "@/core/services/AuthService";
 import { JointStateMessage, JointStates, JointStateTopic } from "@/core/types/JointState";
+import { WEBSOCKET_SERVER_ENDPOINT } from "@/env";
 import { useDebounce } from "@/hooks/useDebounce";
 
 const ControllerSwitcher = () => {
@@ -26,7 +28,6 @@ const ControllerSwitcher = () => {
 
   // Initialize auth storage and cleanup
   useEffect(() => {
-    AuthService.initStorage();
     return () => {
       isMountedRef.current = false;
       if (wsRef.current) {
@@ -39,7 +40,7 @@ const ControllerSwitcher = () => {
   useEffect(() => {
     const connectWebSocket = async () => {
       try {
-        const token = await AuthService.getStoredToken();
+        const token = await AuthService.getAccessToken();
         if (!token) {
           setConnectionError("No authentication token available");
           return;
@@ -50,7 +51,7 @@ const ControllerSwitcher = () => {
         }
 
         console.log("Connecting to WebSocket...");
-        const ws = new WebSocket("ws://127.0.0.1:9090");
+        const ws = new WebSocket(`${WEBSOCKET_SERVER_ENDPOINT}`);
         wsRef.current = ws;
 
         ws.onopen = () => {
@@ -157,36 +158,29 @@ const ControllerSwitcher = () => {
   );
 
   const getConnectionStatus = useCallback(() => {
-    if (connectionError) return { status: `Error: ${connectionError}`, color: "danger" };
-    if (!connected) return { status: "Disconnected", color: "danger" };
-    if (!authenticated) return { status: "Authenticating...", color: "warning" };
-    return { status: "Connected", color: "success" };
+    if (connectionError) return { status: `${connectionError}`, color: "danger" as const };
+    if (!connected) return { status: "Disconnected", color: "danger" as const };
+    if (!authenticated) return { status: "Authenticating...", color: "warning" as const };
+    return { status: "Connected", color: "success" as const };
   }, [connected, authenticated, connectionError]);
 
   const { status, color } = getConnectionStatus();
 
   return (
-    <div className="p-4 min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="p-4">
       <Card className="mx-auto">
-        <CardHeader className="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 bg-gray-50 dark:bg-gray-800">
-          <div className="text-2xl font-bold">ROS 2 Robot Controller</div>
+        <CardHeader className="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4">
+          <div className="text-xl font-bold">ROS 2 Robot Controller</div>
           <ArmBotSwitcher isSelected={isGamepad} onValueChange={setIsGamepad} />
+          <Chip color={color} variant="flat" className="whitespace-nowrap">
+            {status}
+          </Chip>
         </CardHeader>
         <CardBody className="p-0 transition-all duration-300">
           {isGamepad ? (
-            <GamepadController
-              status={status}
-              color={color}
-              jointStates={jointStates}
-              onJointStatesChange={updateJointStates}
-            />
+            <GamepadController jointStates={jointStates} onJointStatesChange={updateJointStates} />
           ) : (
-            <PlayConsole
-              status={status}
-              color={color}
-              jointStates={jointStates}
-              onJointStatesChange={updateJointStates}
-            />
+            <PlayConsole jointStates={jointStates} onJointStatesChange={updateJointStates} />
           )}
         </CardBody>
       </Card>

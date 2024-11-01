@@ -16,20 +16,20 @@ import "@/theme/variables.scss";
 
 import {
   IonApp,
+  IonButton,
   IonContent,
   IonHeader,
   IonMenu,
   IonRouterOutlet,
   IonSpinner,
-  IonSplitPane,
   IonTitle,
   IonToolbar,
-  setupIonicReact
+  setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { Switch } from "@nextui-org/switch";
 import { NextUIProvider } from "@nextui-org/system";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { LogOut, MoonIcon, SunIcon } from "lucide-react";
 import { FC, Suspense, useEffect, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
 
@@ -39,9 +39,7 @@ import AuthService from "@/core/services/AuthService";
 import { HttpService } from "@/core/services/HttpService";
 
 // Initialize Ionic React before the app renders
-setupIonicReact({
-  mode: "md", // Force Material Design mode for consistency
-});
+setupIonicReact();
 
 const LoadingFallback: FC = () => (
   <div className="flex h-screen w-screen items-center justify-center">
@@ -52,20 +50,10 @@ const LoadingFallback: FC = () => (
 
 const App: FC = () => {
   const [theme, setTheme] = useState("dark");
-  const [menuEnabled, setMenuEnabled] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
-
-  // Enable menu after initial render to prevent hydration issues
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMenuEnabled(true);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
@@ -114,53 +102,64 @@ const App: FC = () => {
     );
   }
 
+  const handleLogout = async () => {
+    try {
+      await AuthService.clearAuth();
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <NextUIProvider>
       <IonApp>
-        <IonReactRouter>
-          <IonSplitPane when="md" contentId="main">
-            {menuEnabled && (
-              <IonMenu contentId="main" type="overlay">
-                <IonHeader>
-                  <IonToolbar>
-                    <div className="p-1">
-                      <IonTitle>Menu Content</IonTitle>
-                      <Switch
-                        className="p-3"
-                        defaultSelected
-                        size="lg"
-                        onClick={toggleTheme}
-                        thumbIcon={({ className }) =>
-                          theme === "dark" ? <SunIcon className={className} /> : <MoonIcon className={className} />
-                        }
-                      >
-                        Dark mode
-                      </Switch>
-                    </div>
-                  </IonToolbar>
-                </IonHeader>
-                <IonContent className="ion-padding">This is the menu content.</IonContent>
-              </IonMenu>
-            )}
-            <IonRouterOutlet id="main">
-              <Suspense fallback={<LoadingFallback />}>
-                <Route exact path="/">
-                  <Redirect to={RoutePaths.HOME} />
-                </Route>
+        <IonMenu contentId="main" type="overlay">
+          <IonHeader>
+            <IonToolbar>
+              <div className="p-1">
+                <IonTitle>Menu Content</IonTitle>
+                <Switch
+                  className="p-3"
+                  defaultSelected
+                  size="lg"
+                  onClick={toggleTheme}
+                  thumbIcon={({ className }) =>
+                    theme === "dark" ? <SunIcon className={className} /> : <MoonIcon className={className} />
+                  }
+                >
+                  Dark mode
+                </Switch>
+              </div>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">This is the menu content.</IonContent>
 
-                {getRoutes().map((route) =>
-                  <AuthGuard
-                    key={route.path}
-                    path={route.path}
-                    component={route.component}
-                    isSecure={route.isSecure}
-                    permissions={route.permission}
-                    exact
-                  />
-                )}
-              </Suspense>
-            </IonRouterOutlet>
-          </IonSplitPane>
+          <IonButton onClick={handleLogout} fill="clear" className="flex items-center gap-1">
+            <LogOut className="w-5 h-5" />
+            Logout
+          </IonButton>
+        </IonMenu>
+
+        <IonReactRouter>
+          <IonRouterOutlet id="main">
+            <Suspense fallback={<LoadingFallback />}>
+              <Route exact path="/">
+                <Redirect to={RoutePaths.HOME} />
+              </Route>
+
+              {getRoutes().map((route) => (
+                <AuthGuard
+                  key={route.path}
+                  path={route.path}
+                  component={route.component}
+                  isSecure={route.isSecure}
+                  permissions={route.permission}
+                  exact
+                />
+              ))}
+            </Suspense>
+          </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
     </NextUIProvider>
